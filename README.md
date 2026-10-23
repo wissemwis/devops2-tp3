@@ -83,7 +83,12 @@ leurs résultats, corriger ce qu'ils révèlent et répondre aux questions du fi
 
 ## Partie 0 — Mise en route (20 min)
 
-Le membre A du binôme **forke** ce dépôt (branche `tp3`), A et B clonent le fork.
+Le membre A du binôme **forke** ce dépôt, A et B clonent le fork. Dans le formulaire de fork
+de GitHub, **décochez « Copy the `main` branch only »** : sinon la branche `tp3` n'existe pas
+dans votre fork.
+
+Si la stack du TP2 tourne encore, arrêtez-la d'abord (elle utilise les mêmes ports) : dans le
+dossier du TP2, `docker compose down`.
 
 ```bash
 git clone <url-du-fork> tp3 && cd tp3
@@ -126,6 +131,7 @@ docker compose run --rm unit
    ```
 2. Ouvrez le rapport de couverture dans votre navigateur : `frontend/coverage/index.html`.
    Cliquez sur `cours.ts` : les lignes et branches non exécutées sont surlignées.
+   Faites une capture du rapport : `captures/couverture.png`.
 3. Ajoutez **deux tests** à `filterCours` dans `frontend/tests/unit/cours.test.ts` :
    - une liste de cours **vide** donne une liste vide ;
    - une **recherche texte combinée à un niveau** (par exemple `{ query: "git", level: "debutant" }`).
@@ -188,7 +194,7 @@ docker compose run --rm e2e
    `frontend/playwright-report/index.html`. Regardez le message d'erreur et la capture d'écran.
 2. Ouvrez la **trace** : allez sur https://trace.playwright.dev et glissez-y le fichier
    `frontend/test-results/<nom-du-test>/trace.zip`. Parcourez les étapes : vous voyez la page
-   à chaque action.
+   à chaque action. Faites une capture du rapport en échec : `captures/playwright-echec.png`.
 3. Reconstruisez le frontend avec votre correction, puis relancez les tests :
    ```bash
    docker compose up -d --build frontend
@@ -216,6 +222,11 @@ docker compose ps sonarqube        # attendre "healthy" (1 à 3 minutes)
 
 Ouvrez http://localhost:9000, connectez-vous avec `admin` / `admin` et choisissez un nouveau
 mot de passe.
+
+Passez ensuite SonarQube en mode **Standard Experience**, qui utilise le vocabulaire de ce TP
+(bugs, vulnérabilités, code smells) : *Administration → Configuration → General Settings →
+Mode* → *Standard Experience* → *Save*. Le mode par défaut, *Multi-Quality Rule (MQR)*, classe
+les problèmes autrement (Security, Reliability, Maintainability).
 
 ### 6.2 Créer un jeton d'analyse
 
@@ -297,6 +308,14 @@ duplications, dette), et la vue *Code*.
 ## Partie 7 — Synthèse (20 min)
 
 ➡️ Répondez à **Q27**.
+
+Pour finir, commitez vos réponses et vos captures :
+
+```bash
+git add REPONSES.md captures/
+git commit -m "Ajoute les réponses et les captures du TP3"
+git push
+```
 
 ---
 

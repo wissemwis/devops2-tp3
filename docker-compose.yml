@@ -38,7 +38,7 @@ services:
     # ---------------- CMS headless (API) ----------------
   strapi:
     build: ./backend
-    image: tp2/strapi:latest
+    image: tp3/strapi:latest
     restart: unless-stopped
     environment:
       HOST: 0.0.0.0
@@ -71,7 +71,7 @@ services:
     # ---------------- Front-end ----------------
   frontend:
     build: ./frontend
-    image: tp2/frontend:latest
+    image: tp3/frontend:latest
     restart: unless-stopped
     environment:
       # Appel serveur à serveur : on utilise le nom du service, pas "localhost"
