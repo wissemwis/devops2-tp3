@@ -4,6 +4,13 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
+# ---- Tests unitaires, de composant et d'intégration (jamais livré en production) ----
+FROM deps AS test
+WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
+COPY . .
+CMD ["npm", "run", "test:unit"]
+
 # ---- 2. Build ----
 FROM node:22-alpine AS builder
 WORKDIR /app

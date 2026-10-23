@@ -88,6 +88,19 @@ services:
       retries: 12
       start_period: 20s
 
+  # ---------------- Tests (profil "test") ----------------
+  unit:
+    build:
+      context: ./frontend
+      target: test
+    image: tp3/frontend-test:latest
+    profiles: ["test"]
+    command: ["npm", "run", "test:unit"]
+    volumes:
+      - ./frontend:/app
+      # Volume anonyme : garde le node_modules de l'image au lieu de celui (absent) de l'hôte
+      - /app/node_modules
+
 volumes:
   pgdata:
   pgadmin-data:
