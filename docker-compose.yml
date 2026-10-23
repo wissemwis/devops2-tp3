@@ -101,6 +101,22 @@ services:
       # Volume anonyme : garde le node_modules de l'image au lieu de celui (absent) de l'hôte
       - /app/node_modules
 
+  integration:
+    build:
+      context: ./frontend
+      target: test
+    image: tp3/frontend-test:latest
+    profiles: ["test"]
+    command: ["npm", "run", "test:integration"]
+    environment:
+      STRAPI_URL: http://strapi:1337
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      strapi:
+        condition: service_healthy
+
 volumes:
   pgdata:
   pgadmin-data:
