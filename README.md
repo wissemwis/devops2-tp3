@@ -120,8 +120,22 @@ navigateur, sans réseau et sans Strapi. Le même service lance aussi les tests 
 docker compose run --rm unit
 ```
 
-1. Un test échoue. Lisez attentivement le message, retrouvez la fonction en cause dans
-   `frontend/lib/cours.ts` et **corrigez-la**. Relancez les tests jusqu'à ce qu'ils passent tous.
+1. Un test échoue. Lisez attentivement le message : quel test, quelle valeur attendue, quelle
+   valeur obtenue ? Ouvrez `frontend/lib/cours.ts` et repérez la fonction en cause.
+
+   Appliquez la correction : dans `formatDuration`, remplacez la dernière ligne
+
+   ```ts
+     return `${hours} h ${rest}`;
+   ```
+
+   par :
+
+   ```ts
+     return rest === 0 ? `${hours} h` : `${hours} h ${rest}`;
+   ```
+
+   Relancez `docker compose run --rm unit` : tous les tests passent. Commitez :
    ```bash
    git add frontend/lib/cours.ts
    git commit -m "Corrige formatDuration pour les heures pleines"
@@ -129,11 +143,23 @@ docker compose run --rm unit
 2. Ouvrez le rapport de couverture dans votre navigateur : `frontend/coverage/index.html`.
    Cliquez sur `cours.ts` : les lignes et branches non exécutées sont surlignées.
    Faites une capture du rapport : `captures/couverture.png`.
-3. Ajoutez **deux tests** à `filterCours` dans `frontend/tests/unit/cours.test.ts` :
-   - une liste de cours **vide** donne une liste vide ;
-   - une **recherche texte combinée à un niveau** (par exemple `{ query: "git", level: "debutant" }`).
+3. Ajoutez **deux tests** à `filterCours`. Dans `frontend/tests/unit/cours.test.ts`, à
+   l'intérieur du bloc `describe("filterCours", ...)`, collez ces deux tests juste après le test
+   « ne filtre pas quand le niveau vaut « tous » » :
 
-   Relancez, puis :
+   ```ts
+     it("renvoie une liste vide quand il n'y a aucun cours", () => {
+       expect(filterCours([], { query: "docker", level: "avance" })).toEqual([]);
+     });
+
+     it("combine la recherche et le niveau", () => {
+       const resultat = filterCours(COURS, { query: "git", level: "debutant" });
+       expect(resultat.map((c) => c.documentId)).toEqual(["d"]);
+     });
+   ```
+
+   Relancez `docker compose run --rm unit`, comparez le tableau de couverture avec le précédent
+   et rouvrez le rapport HTML. Puis :
    ```bash
    git add frontend/tests/unit/cours.test.ts
    git commit -m "Ajoute des tests sur filterCours pour couvrir la recherche"
@@ -282,11 +308,66 @@ duplications, dette), et la vue *Code*.
 
 ### 6.5 Corriger et ré-analyser
 
-1. **La vulnérabilité.** Le mot de passe écrit en dur dans `frontend/lib/api.ts` doit venir de
-   l'environnement : remplacez la valeur par `process.env.STRAPI_CLIENT_PASSWORD ?? ""`, ajoutez
-   `STRAPI_CLIENT_PASSWORD: ${STRAPI_CLIENT_PASSWORD}` dans l'`environment` du service `frontend`,
-   et une ligne `STRAPI_CLIENT_PASSWORD=change-moi` dans `.env.example` et `.env`.
-2. **Deux code smells** de votre choix dans `frontend/components/CoursList.tsx`.
+1. **La vulnérabilité.** Le mot de passe écrit en dur dans le code doit venir de
+   l'environnement.
+
+   Dans `frontend/lib/api.ts`, remplacez :
+
+   ```ts
+   // Mot de passe du client auprès de l'API
+   const API_PASSWORD = "Tp3-Cours-2026!";
+   ```
+
+   par :
+
+   ```ts
+   // Mot de passe du client auprès de l'API (fourni par l'environnement)
+   const API_PASSWORD = process.env.STRAPI_CLIENT_PASSWORD ?? "";
+   ```
+
+   Dans `docker-compose.yml`, ajoutez la variable à l'`environment` du service `frontend` :
+
+   ```yaml
+       environment:
+         # Appel serveur à serveur : on utilise le nom du service, pas "localhost"
+         STRAPI_URL: http://strapi:1337
+         STRAPI_CLIENT_PASSWORD: ${STRAPI_CLIENT_PASSWORD}
+   ```
+
+   Enfin, ajoutez cette ligne dans `.env.example` **et** dans `.env` (section Strapi) :
+
+   ```
+   STRAPI_CLIENT_PASSWORD=change-moi
+   ```
+
+2. **Les code smells de `CoursList.tsx`.** Dans `frontend/components/CoursList.tsx`, remplacez
+   tout ce qui se trouve **avant** la ligne `export default function CoursList` (les imports et la
+   fonction `describeResults`) par :
+
+   ```tsx
+   "use client";
+
+   import { useState } from "react";
+   import CoursCard from "@/components/CoursCard";
+   import CoursFilters from "@/components/CoursFilters";
+   import { filterCours, LEVEL_LABELS, type Cours, type LevelFilter } from "@/lib/cours";
+
+   function describeEmpty(query: string, level: LevelFilter): string {
+     const niveau = level === "tous" ? "" : ` de niveau ${LEVEL_LABELS[level].toLowerCase()}`;
+     if (query !== "") {
+       return `Aucun cours${niveau} ne correspond à « ${query} ».`;
+     }
+     return niveau === "" ? "Aucun cours disponible." : `Aucun cours${niveau}.`;
+   }
+
+   function describeResults(count: number, query: string, level: LevelFilter): string {
+     return count === 0 ? describeEmpty(query, level) : `${count} cours`;
+   }
+   ```
+
+   Avant de remplacer, comparez avec l'ancienne version : quels problèmes signalés par SonarQube
+   ce changement fait-il disparaître ?
+
 3. Vérifiez que rien n'est cassé, puis commitez :
    ```bash
    docker compose up -d --build frontend

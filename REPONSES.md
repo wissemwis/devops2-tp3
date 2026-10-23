@@ -14,11 +14,11 @@
 
 **Q3.** Combien de tests sont exécutés et combien échouent ? Recopiez le message d'échec et expliquez ce que signifient `Expected` et `Received`.
 
-**Q4.** Quelle est la cause du bug dans `formatDuration` ? Collez votre correction (`git show` du commit).
+**Q4.** Quelle était la cause du bug dans `formatDuration` ? Expliquez pourquoi la correction fournie le résout.
 
 **Q5.** Avant d'ajouter des tests : relevez la couverture (lignes, branches, fonctions) de `lib/cours.ts`. D'après le rapport HTML, quelles lignes ou branches ne sont pas couvertes ?
 
-**Q6.** Collez vos deux nouveaux tests. Quelle est la nouvelle couverture de `lib/cours.ts` ?
+**Q6.** Après l'ajout des deux tests fournis : quelle est la nouvelle couverture de `lib/cours.ts` ? Quelles lignes ou branches ces tests exécutent-ils qui ne l'étaient pas ? Reste-t-il quelque chose de non couvert, et pourquoi ?
 
 **Q7.** Quelle différence entre couverture de lignes et couverture de branches ? Un code couvert à 100 % est-il forcément sans bug ? Justifiez avec un exemple tiré de ce TP.
 
@@ -62,9 +62,9 @@
 
 **Q20.** Expliquez la différence entre bug, vulnérabilité, security hotspot et code smell, avec un exemple tiré de votre rapport quand il en existe.
 
-**Q21.** Ouvrez la vulnérabilité : quelle règle est en cause et quel est le risque ? Comment l'avez-vous corrigée ? Pourquoi un secret dans le code est-il dangereux, même dans un dépôt privé ?
+**Q21.** Ouvrez la vulnérabilité : quelle règle est en cause et quel est le risque ? Expliquez la correction fournie : d'où vient maintenant le mot de passe, et par quel chemin arrive-t-il jusqu'au code ? Pourquoi un secret dans le code est-il dangereux, même dans un dépôt privé ?
 
-**Q22.** Choisissez deux code smells : règle, sévérité, explication, correction apportée.
+**Q22.** Quels code smells la correction fournie de `CoursList.tsx` fait-elle disparaître ? Pour chacun : règle, sévérité, explication, et ce qui, dans le nouveau code, règle le problème.
 
 **Q23.** Où se trouve le code dupliqué ? Comment le supprimer ? (Ne le faites pas, décrivez seulement.)
 
