@@ -29,6 +29,6 @@ test.describe("Parcours d'un visiteur", () => {
     await page.getByRole("link", { name: "Introduction au DevOps" }).click();
     await expect(page).toHaveURL(/\/cours\//);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Introduction au DevOps");
-    await expect(page.getByText("1 h", { exact: true })).toBeVisible();
+    await expect(page.getByRole("main").getByText("1 h", { exact: true })).toBeVisible();
   });
 });
