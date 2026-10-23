@@ -133,7 +133,42 @@ services:
       frontend:
         condition: service_healthy
 
+  # ---------------- Qualité du code (profil "quality") ----------------
+  sonarqube:
+    image: sonarqube:26.9.0.129388-community
+    profiles: ["quality"]
+    environment:
+      # Évite l'arrêt d'Elasticsearch sur les machines où vm.max_map_count est trop bas
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    volumes:
+      - sonar-data:/opt/sonarqube/data
+      - sonar-extensions:/opt/sonarqube/extensions
+      - sonar-logs:/opt/sonarqube/logs
+    ports:
+      - "${SONAR_PORT:-9000}:9000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://127.0.0.1:9000/api/system/status | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli:12.2.0.4256_8.1.0
+    profiles: ["quality"]
+    environment:
+      SONAR_HOST_URL: http://sonarqube:9000
+      SONAR_TOKEN: ${SONAR_TOKEN}
+    volumes:
+      - ./frontend:/usr/src
+    depends_on:
+      sonarqube:
+        condition: service_healthy
+
 volumes:
   pgdata:
   pgadmin-data:
   strapi-uploads:
+  sonar-data:
+  sonar-extensions:
+  sonar-logs:

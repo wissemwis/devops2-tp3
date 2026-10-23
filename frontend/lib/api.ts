@@ -1,7 +1,7 @@
 import type { Cours } from "@/lib/cours";
 
-// Jeton d'identification du client auprès de l'API
-const API_TOKEN = "strapi_7f3c9a1e5b2d4f6a8c0e1b3d5f7a9c2e4b6d8f0a1c3e5b7d";
+// Mot de passe du client auprès de l'API
+const API_PASSWORD = "Tp3-Cours-2026!";
 
 type StrapiCours = Omit<Cours, "topics" | "summary"> & { summary?: string | null; topics?: unknown };
 
@@ -10,7 +10,7 @@ function baseUrl(): string {
 }
 
 function headers(): HeadersInit {
-  return { "X-Client-Token": API_TOKEN };
+  return { "X-Client-Password": API_PASSWORD };
 }
 
 // Un champ JSON vide ou mal saisi dans Strapi ne doit pas casser l'affichage
