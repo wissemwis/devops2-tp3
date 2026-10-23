@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TP2 DevOps 2",
-  description: "Next.js + Strapi + PostgreSQL avec Docker Compose",
+  title: "Cours DevOps 2",
+  description: "Site de présentation des cours du module DevOps 2 (TP3).",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

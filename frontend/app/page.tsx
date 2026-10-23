@@ -1,53 +1,45 @@
-import { Suspense } from "react";
-import { connection } from "next/server";
-
-type Article = {
-  id: number;
-  documentId: string;
-  title: string;
-  summary: string | null;
-};
-
-// URL interne au réseau Docker (nom du service), lue à l'exécution et non au build
-async function getArticles(): Promise<Article[]> {
-  await connection();
-  const baseUrl = process.env.STRAPI_URL ?? "http://localhost:1337";
-  const res = await fetch(`${baseUrl}/api/articles`, { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Strapi a répondu ${res.status}`);
-  }
-  const json: { data: Article[] } = await res.json();
-  return json.data;
-}
-
-async function Articles() {
-  try {
-    const articles = await getArticles();
-    if (articles.length === 0) {
-      return <p>Aucun article publié pour le moment.</p>;
-    }
-    return (
-      <ul>
-        {articles.map((article) => (
-          <li key={article.documentId}>
-            <h2>{article.title}</h2>
-            {article.summary && <p>{article.summary}</p>}
-          </li>
-        ))}
-      </ul>
-    );
-  } catch (error) {
-    return <p className="error">Impossible de joindre Strapi : {String(error)}</p>;
-  }
-}
+import DevOpsLoop from "@/components/DevOpsLoop";
 
 export default function Home() {
   return (
-    <main>
-      <h1>TP2 — Next.js + Strapi + PostgreSQL</h1>
-      <Suspense fallback={<p>Chargement des articles…</p>}>
-        <Articles />
-      </Suspense>
-    </main>
+    <>
+      <nav className="nav">
+        <div className="container">
+          <a className="brand" href="#">
+            <span className="brand-mark">D</span>
+            DevOps 2
+          </a>
+          <ul className="nav-links">
+            <li><a href="#cours">Les cours</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <header className="hero">
+        <div className="container">
+          <div>
+            <div className="eyebrow">Module ECUE733 · Site pédagogique</div>
+            <h1>Les cours du module DevOps 2</h1>
+            <p className="lead">
+              De Git au déploiement continu : retrouvez chaque séance, sa durée, son niveau et ses notions clés.
+            </p>
+            <div className="hero-actions">
+              <a className="btn btn-primary" href="#cours">Voir les cours</a>
+            </div>
+            <span className="pill">DevOps 2 · TP3</span>
+          </div>
+          <DevOpsLoop className="loop" />
+        </div>
+      </header>
+
+      <section id="cours">
+        <div className="container">
+          <div className="section-head">
+            <h2>Les cours</h2>
+            <p>Cherchez une notion ou filtrez par niveau.</p>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
