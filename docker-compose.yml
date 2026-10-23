@@ -117,6 +117,22 @@ services:
       strapi:
         condition: service_healthy
 
+  e2e:
+    build:
+      context: ./frontend
+      target: e2e
+    image: tp3/frontend-e2e:latest
+    profiles: ["e2e"]
+    command: ["npm", "run", "test:e2e"]
+    environment:
+      BASE_URL: http://frontend:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      frontend:
+        condition: service_healthy
+
 volumes:
   pgdata:
   pgadmin-data:

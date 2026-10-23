@@ -11,6 +11,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY . .
 CMD ["npm", "run", "test:unit"]
 
+# ---- Tests de bout en bout : image officielle Playwright (navigateurs inclus) ----
+FROM mcr.microsoft.com/playwright:v1.64.1-noble AS e2e
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+CMD ["npm", "run", "test:e2e"]
+
 # ---- 2. Build ----
 FROM node:22-alpine AS builder
 WORKDIR /app
