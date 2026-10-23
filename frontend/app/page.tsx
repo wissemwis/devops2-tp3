@@ -1,4 +1,20 @@
+import { Suspense } from "react";
+import { connection } from "next/server";
+import CoursList from "@/components/CoursList";
 import DevOpsLoop from "@/components/DevOpsLoop";
+import { getCours } from "@/lib/api";
+import { sortBySession } from "@/lib/cours";
+
+// Rendu à la requête (pas au build) : Strapi n'est pas joignable pendant "next build"
+async function CoursSection() {
+  await connection();
+  try {
+    const cours = sortBySession(await getCours());
+    return <CoursList cours={cours} />;
+  } catch (error) {
+    return <p className="error">Impossible de joindre Strapi : {String(error)}</p>;
+  }
+}
 
 export default function Home() {
   return (
@@ -38,6 +54,9 @@ export default function Home() {
             <h2>Les cours</h2>
             <p>Cherchez une notion ou filtrez par niveau.</p>
           </div>
+          <Suspense fallback={<p>Chargement des cours…</p>}>
+            <CoursSection />
+          </Suspense>
         </div>
       </section>
     </>
