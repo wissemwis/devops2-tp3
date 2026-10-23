@@ -83,16 +83,13 @@ leurs résultats, corriger ce qu'ils révèlent et répondre aux questions du fi
 
 ## Partie 0 — Mise en route (20 min)
 
-Le membre A du binôme **forke** ce dépôt, A et B clonent le fork. Dans le formulaire de fork
-de GitHub, **décochez « Copy the `main` branch only »** : sinon la branche `tp3` n'existe pas
-dans votre fork.
+Le membre A du binôme **forke** ce dépôt, A et B clonent le fork.
 
 Si la stack du TP2 tourne encore, arrêtez-la d'abord (elle utilise les mêmes ports) : dans le
 dossier du TP2, `docker compose down`.
 
 ```bash
 git clone <url-du-fork> tp3 && cd tp3
-git switch tp3
 cp .env.example .env
 docker compose up -d --build
 docker compose ps          # attendre que strapi et frontend soient "healthy"
@@ -321,7 +318,7 @@ git push
 
 ## Livrables
 
-Sur votre fork, branche `tp3` :
+Sur votre fork, branche `main` :
 
 1. `REPONSES.md` complété ;
 2. les **trois commits** demandés (correction du bug, ajout des tests, corrections SonarQube) ;
